@@ -26,7 +26,7 @@ C
      2  enerInternNew(nblock), enerInelasNew(nblock)
 C
       character*80 cmname
-c     ³£Á¿ÉùÃ÷
+c     å¸¸é‡å£°æ˜ const parameter
       real*8,parameter:: x0=1.0d-30,PRECISION_GAMMA=5.0d-3,
      1  PRECISION_RHO=5.0d-3,DPEEQ_SHRINK=1.0d-5
       parameter(ZERO=0.0d0,ONE=1.0d0,TWO=2.0d0,THREE=3.0d0,HALF=0.5d0,
@@ -35,48 +35,48 @@ C
       real*8 E,mu,Rho_c0,Rho_w0,diameter,dpeeq,peeq,Rho,rho_w,rho_c,
      1  rhoc_old,rhow_old,pre_dpeeq,dpeeq_trial,volFrac,K_frac
       
-c     ×´Ì¬±äÁ¿ÄÚÈİ
-c     state(*,1) Çü·şÓ¦Á¦
-c     state(*,2) µÈĞ§ËÜĞÔÓ¦±ä
-c     state(*,3) Î»´í±ÚÃÜ¶È
-c     state(*,4) Î»´í°ûÃÜ¶È
-c     state(*,5) Î»´í°ûÖ±¾¶
-c     state(*,6) Î»´í±ÚÌå»ı·ÖÊı
+c     çŠ¶æ€å˜é‡å†…å®¹
+c     state(*,1) å±ˆæœåº”åŠ› Yeild Stress
+c     state(*,2) ç­‰æ•ˆå¡‘æ€§åº”å˜ PEEQ
+c     state(*,3) ä½é”™å£å¯†åº¦ Dislocation Wall Density
+c     state(*,4) ä½é”™èƒå¯†åº¦ Dislocation Cell Density
+c     state(*,5) ä½é”™èƒç›´å¾„ Dislocation Cell Diameter
+c     state(*,6) ä½é”™å£ä½“ç§¯åˆ†æ•° Volume Fraction
       
-c     state(*,7) ×ÜÎ»´íÃÜ¶È
+c     state(*,7) æ€»ä½é”™å¯†åº¦ Total Dislocation Density
       
-c     ÓÃ»§ÊäÈë²ÎÊı¸³Óè
-      E = props(1) !µ¯ĞÔÄ£Á¿
-      Mu = props(2) !²´ËÉ±È
+c     ç”¨æˆ·è¾“å…¥å‚æ•°èµ‹äºˆ Parameters about Material
+      E = props(1) !å¼¹æ€§æ¨¡é‡
+      Mu = props(2) !æ³Šæ¾æ¯” 
       
-      Sig1 = props(3) !³õÊ¼Ó¦Á¦S1
-      Alpha_star = props(4) !¦Á*
-      Beta_star = props(5) !¦Â*
+      Sig1 = props(3) !åˆå§‹åº”åŠ›S1
+      Alpha_star = props(4) !Î±*
+      Beta_star = props(5) !Î²*
       K_c = props(6) !kc
       K_w = props(7) !kw
       N_c = props(8) !nc
       N_w = props(9) !nw
       M_star = props(10) !m*
-      Burger = props(11) !b ²®ÊÏÊ¸Á¿
-      Taylor = props(12) !M Ì©ÀÕÒò×Ó
-      Eta = props(13) !¦Ç ³£Êı
-      volFrac_zero = props(14) !f_0 Ìå»ı·ÖÊı²ÎÊı
-      volFrac_infin = props(15) !f_infin Ìå»ı·ÖÊı²ÎÊı
-      Gamma0 = props(16) !²Î¿¼¼ôÓ¦±äÂÊ
-      K_zero = props(17) !K²ÎÊı
-      K_infin = props(18) !K²ÎÊı
-      Peeq_wave = props(19) !³£Êı
-      Beta = props(20) !³£Êı
-      Rho_c0 = props(21) !³õÊ¼Î»´í°ûÃÜ¶È
-      Rho_w0 = props(22) !³õÊ¼Î»´í±ÚÃÜ¶È
+      Burger = props(11) !b ä¼¯æ°çŸ¢é‡
+      Taylor = props(12) !M æ³°å‹’å› å­
+      Eta = props(13) !Î· å¸¸æ•°
+      volFrac_zero = props(14) !f_0 ä½“ç§¯åˆ†æ•°å‚æ•°
+      volFrac_infin = props(15) !f_infin ä½“ç§¯åˆ†æ•°å‚æ•°
+      Gamma0 = props(16) !å‚è€ƒå‰ªåº”å˜ç‡
+      K_zero = props(17) !Kå‚æ•°
+      K_infin = props(18) !Kå‚æ•°
+      Peeq_wave = props(19) !å¸¸æ•°
+      Beta = props(20) !å¸¸æ•°
+      Rho_c0 = props(21) !åˆå§‹ä½é”™èƒå¯†åº¦
+      Rho_w0 = props(22) !åˆå§‹ä½é”™å£å¯†åº¦
       
       
 
-c     À­Ã·³£Êı
+c     æ‹‰æ¢…å¸¸æ•° Lame constant
       La = (Mu*E)/((ONE+Mu)*(ONE-TWO*Mu)) !lambda
       Lb = E/(TWO*(ONE+Mu)) !G
       
-      if(stepTime .eq. ZERO)then !³õÊ¼Ê±¼ä²½
+      if(stepTime .eq. ZERO)then !åˆå§‹æ—¶é—´æ­¥ initial step
           do k=1,nblock
               trace = strainInc(k,1)+strainInc(k,2)+strainInc(k,3)
               
@@ -87,8 +87,8 @@ c     À­Ã·³£Êı
               stressNew(k,5) = TWO*Lb*strainInc(k,5)
               stressNew(k,6) = TWO*Lb*strainInc(k,6)
           end do
-      else !·Ç³õÊ¼Ê±¼ä²½
-          do k=1,nblock !¼ÆËãÊÔÓ¦Á¦
+      else !éåˆå§‹æ—¶é—´æ­¥ following step
+          do k=1,nblock !è®¡ç®—è¯•åº”åŠ› calculating trial stress
               trace = strainInc(k,1)+strainInc(k,2)+strainInc(k,3)
               
               s1 = stressOld(k,1) + TWO*Lb*strainInc(k,1) + trace*La
@@ -98,7 +98,7 @@ c     À­Ã·³£Êı
               s5 = stressOld(k,5) + TWO*Lb*strainInc(k,5)
               s6 = stressOld(k,6) + TWO*Lb*strainInc(k,6)
               
-              !¼ÆËãmiseÓ¦Á¦£¬ÅĞ¶ÏÊÇ·ñÇü·ş
+              !è®¡ç®—miseåº”åŠ›ï¼Œåˆ¤æ–­æ˜¯å¦å±ˆæœ calculating mise stress then check Is yeild?
               sm = (s1+s2+s3)/THREE
               s1 = s1 - sm
               s2 = s2 - sm
@@ -107,7 +107,7 @@ c     À­Ã·³£Êı
               mise = sqrt(1.5d0 * 
      1  ((s1*s1 + s2*s2 + s3*s3) + TWO*(s4*s4 + s5*s5 +s6*s6)))
               
-              !´«µİÁ¿
+              !ä¼ é€’é‡ variable could be changed in process
               sig_y = stateOld(k,1)
               peeq = stateOld(k,2)
               rho_w = stateOld(k,3)
@@ -115,20 +115,20 @@ c     À­Ã·³£Êı
               diameter = stateOld(k,5)
               volFrac = stateOld(k,6)
               
-              !²»´«µİÁ¿
+              !ä¸ä¼ é€’é‡ variable havn't changed in process
               Rho = StateOld(k,7)
               
 
 
               dpeeq = ZERO
               
-              if(sig_y .EQ. ZERO)then !ÔÚÎ´Çü·şÊ±ÎªÏà¹Ø±äÁ¿¸³Öµ
+              if(sig_y .EQ. ZERO)then !åœ¨æœªå±ˆæœæ—¶ä¸ºç›¸å…³å˜é‡èµ‹å€¼ Assign values to related variables when unyielding
                   peeq = ZERO
                   
                   rho_w = rho_w0
                   rho_c = rho_c0
                   
-                  !Ïà¹Ø±äÁ¿³õÖµ¼ÆËã
+                  !ç›¸å…³å˜é‡åˆå€¼è®¡ç®— Calculation of initial values of relevant variables
                   K_frac = K_zero
                   
                   volFrac = volFrac_zero
@@ -142,8 +142,8 @@ c     À­Ã·³£Êı
 
               end if
               
-              if(mise .LE. sig_y)then !Î´Çü·ş ÊÔÌ½Ó¦Á¦¾ÍÊÇÊµ¼ÊÓ¦Á¦
-                  !Ó¦Á¦¼ÆËã
+              if(mise .LE. sig_y)then !æœªå±ˆæœ è¯•æ¢åº”åŠ›å°±æ˜¯å®é™…åº”åŠ› The test stress at unyielding is the actual stress
+                  !åº”åŠ›è®¡ç®— stress calculation
                   stressNew(k,1) = s1 + sm
                   stressNew(k,2) = s2 + sm
                   stressNew(k,3) = s3 + sm
@@ -151,7 +151,7 @@ c     À­Ã·³£Êı
                   stressNew(k,5) = s5
                   stressNew(k,6) = s6
                   
-                  !ÄÜÁ¿¼ÆËã
+                  !èƒ½é‡è®¡ç®— energy calculation
                   strainEnergy = HALF * (
      1  (stressNew(k,1)+stressOld(k,1))*strainInc(k,1) + 
      2  (stressNew(k,2)+stressOld(k,2))*strainInc(k,2) + 
@@ -164,22 +164,24 @@ c     À­Ã·³£Êı
      1  strainEnergy/density(k)
                   
                   enerInelasNew(k) = enerInelasOld(k)
-              else !Çü·ş °´Î»´íÃÜ¶È±¾¹¹Ä£ĞÍ¼ÆËã
-                  !¼ÆËãÊÔÌ½µÈĞ§ËÜĞÔÓ¦±ä³õÖµ
+              else !å±ˆæœ æŒ‰ä½é”™å¯†åº¦æœ¬æ„æ¨¡å‹è®¡ç®— According to dislocation density constitutive model when yeild
+                  !è®¡ç®—è¯•æ¢ç­‰æ•ˆå¡‘æ€§åº”å˜åˆå€¼ Calculating the initial value of equivalent plastic strain
                   
                   rhoc_old = rho_c
                   rhow_old = rho_w
                   d_old = diameter
                   
                   
-          !µü´ú¼ÆËãÔöÁ¿²½¿ªÊ¼Ê±µÄµÈĞ§Ó¦±äÔöÁ¿(°´Å£¶Ùµü´ú·¨Çó½â)
-          !¸ÃÔöÁ¿²½×÷ÎªÎª³õÊ¼ÊÔÌ½Öµ
+          !è¿­ä»£è®¡ç®—å¢é‡æ­¥å¼€å§‹æ—¶çš„ç­‰æ•ˆåº”å˜å¢é‡(æŒ‰ç‰›é¡¿è¿­ä»£æ³•æ±‚è§£)
+          !The equivalent strain increment at the beginning of the increment step is computed iteratively (solved by Newton iteration method).
+          !è¯¥å¢é‡æ­¥ä½œä¸ºä¸ºåˆå§‹è¯•æ¢å€¼
+          !This incremental step is taken as the initial trial stress value
 
-          !µü´ú³£ÊıÉùÃ÷
+          !è¿­ä»£å¸¸æ•°å£°æ˜ Iterative constant declaration
           jstep = ZERO
-          dpeeq = (mise-Sig1)/(THREE*Lb) !ÓÉmise¿ØÖÆµÄ¼ÙÉèµü´ú³õÖµ
+          dpeeq = (mise-Sig1)/(THREE*Lb) !ç”±miseæ§åˆ¶çš„å‡è®¾è¿­ä»£åˆå€¼ mise controlled initial value of hypothetical iteration
           
-          !¼ÆËãµü´ú³õÖµ
+          !è®¡ç®—è¿­ä»£åˆå€¼ Calculating the initial iteration value
           f = ONE
           do while(f .GT. ZERO)
               dpeeq = dpeeq*DPEEQ_SHRINK
@@ -189,7 +191,7 @@ c     À­Ã·³£Êı
           end do
 
           pre_dpeeq = -dpeeq
-      !¿ªÊ¼ÓÃÅ£¶Ùµü´ú¼ÆËãµÈĞ§Ó¦±äÔöÁ¿
+      !å¼€å§‹ç”¨ç‰›é¡¿è¿­ä»£è®¡ç®—ç­‰æ•ˆåº”å˜å¢é‡ The equivalent strain increment is calculated by Newton iteration
       do while(abs((pre_dpeeq-dpeeq)/pre_dpeeq) .GT. PRECISION_GAMMA)
                   
           f = Sig1-mise+THREE*Lb*dpeeq+Taylor*Eta*Lb*Burger*
@@ -204,7 +206,7 @@ c     À­Ã·³£Êı
           pre_dpeeq = dpeeq
           dpeeq = dpeeq - f/df
           
-          !¼ÆÊıÆ÷
+          !è®¡æ•°å™¨
           jstep = jstep + ONE
 
           if(jstep .GT. MAXSTEP)then
@@ -216,17 +218,19 @@ c     À­Ã·³£Êı
 
           dpeeq_trial = -dpeeq
 
-      !µü´ú¼ÆËãÊÔÌ½Î»´íÃÜ¶ÈÓëÇü·şÓ¦Á¦
-      !ÉèÖÃ×î¶àµü´ú²½Êı£¬ÒÔ·Àµü´ú²»ÊÕÁ²Ê±¿¨ËÀ³ÌĞò
+      !è¿­ä»£è®¡ç®—è¯•æ¢ä½é”™å¯†åº¦ä¸å±ˆæœåº”åŠ›
+      !The dislocation density and yield stress were tested by iterative calculation
+      !è®¾ç½®æœ€å¤šè¿­ä»£æ­¥æ•°ï¼Œä»¥é˜²è¿­ä»£ä¸æ”¶æ•›æ—¶å¡æ­»ç¨‹åº
+      !Set the maximum number of iteration steps to prevent the program from getting stuck when iteration does not converge
       kstep = ZERO      
-      do while(kstep .LT. MAXSTEP)!µü´úÑ­»·
+      do while(kstep .LT. MAXSTEP)!è¿­ä»£å¾ªç¯ iterative loop
           dpeeq_trail = dpeeq
           
-          !Ìå»ı·ÖÊı
+          !ä½“ç§¯åˆ†æ•° Volume Fraction
           volFrac = volFrac_infin + (volFrac_zero-volFrac_infin)*
      1  exp((-Taylor*(peeq+dpeeq))/Peeq_wave)
           
-          !Î»´í°ûÃÜ¶È
+          !ä½é”™èƒå¯†åº¦ Dislocation Wall Density
           rho_c = rhoc_old + (
      1  dsqrt(rhow_old/THREE)*((Taylor*Alpha_star)/Burger) - 
      2  (SIX*Beta_star*Taylor)/
@@ -234,7 +238,7 @@ c     À­Ã·³£Êı
      4  K_c*Taylor*rhoc_old*(((Taylor*dpeeq)/(dt*Gamma0))**(-ONE/N_c))
      5  ) * dpeeq
           
-          !Î»´í±ÚÃÜ¶È
+          !ä½é”™å£å¯†åº¦ Dislocation Cell Density
           rho_w = rhow_old + (
      1  (dsqrt(THREE*rhow_old)*Beta_star*Taylor*(ONE-volFrac))/
      2  (volFrac*Burger) + 
@@ -243,22 +247,24 @@ c     À­Ã·³£Êı
      5  K_w*Taylor*rhow_old*(((Taylor*dpeeq)/(dt*Gamma0))**(-ONE/N_w)) 
      6  ) * dpeeq
           
-          !×ÜÎ»´íÃÜ¶È
+          !æ€»ä½é”™å¯†åº¦ Total Dislocation Density
           Rho = volFrac*rho_w + (ONE-volFrac)*rho_c
           
-          !¾§°ûÖ±¾¶±í´ïÊ½ÖĞµÄ·Ö×Ó
+          !æ™¶èƒç›´å¾„è¡¨è¾¾å¼ä¸­çš„åˆ†å­ Molecules in the cell diameter expression
           K_frac = K_infin + (K_zero-K_infin)*
      1  exp(-Beta*Taylor*(peeq+dpeeq))
           
-          !¾§°ûÖ±¾¶
+          !æ™¶èƒç›´å¾„ Dislocation Cell Diameter
           diameter = K_frac/dsqrt(Rho)
           
-          !¼ÆËãÎ»´í¸üĞÂºóµÄµÈĞ§ËÜĞÔÓ¦±äÔöÁ¿
-          !µü´ú³£ÊıÉùÃ÷
+          !è®¡ç®—ä½é”™æ›´æ–°åçš„ç­‰æ•ˆå¡‘æ€§åº”å˜å¢é‡
+          !Calculate the equivalent plastic strain increment after dislocation updating
+          !è¿­ä»£å¸¸æ•°å£°æ˜
+          !Iterative constant declaration
           jstep = ZERO
-          dpeeq = (mise-Sig1)/(THREE*Lb) !ÓÉmise¿ØÖÆµÄ¼ÙÉèµü´ú³õÖµ
+          dpeeq = (mise-Sig1)/(THREE*Lb) !ç”±miseæ§åˆ¶çš„å‡è®¾è¿­ä»£åˆå€¼ mise controlled initial value of hypothetical iteration
           
-          !¼ÆËãµü´ú³õÖµ
+          !è®¡ç®—è¿­ä»£åˆå€¼ Calculate the initial iteration value
           f = ONE
           do while(f .GT. ZERO)
               dpeeq = dpeeq*DPEEQ_SHRINK
@@ -268,7 +274,8 @@ c     À­Ã·³£Êı
           end do
           
           pre_dpeeq = -dpeeq
-      !¿ªÊ¼ÓÃÅ£¶Ùµü´ú¼ÆËãµÈĞ§Ó¦±äÔöÁ¿
+      !å¼€å§‹ç”¨ç‰›é¡¿è¿­ä»£è®¡ç®—ç­‰æ•ˆåº”å˜å¢é‡ 
+      !The equivalent strain increment is calculated by Newton iteration
       do while(abs((pre_dpeeq-dpeeq)/pre_dpeeq) .GT. PRECISION_GAMMA)
                   
           f = Sig1-mise+THREE*Lb*dpeeq+Taylor*Eta*Lb*Burger*
@@ -283,7 +290,7 @@ c     À­Ã·³£Êı
           pre_dpeeq = dpeeq
           dpeeq = dpeeq - f/df
           
-          !¼ÆÊıÆ÷
+          !è®¡æ•°å™¨ counter
           jstep = jstep + ONE
 
           if(jstep .GT. MAXSTEP)then
@@ -300,14 +307,14 @@ c     À­Ã·³£Êı
               EXIT
           end if
           
-      !¼ÆÊıÆ÷
+      !è®¡æ•°å™¨ counter
       kstep = kstep + ONE
 
-      end do!µü´úÑ­»·½áÊø
+      end do!è¿­ä»£å¾ªç¯ç»“æŸ End of iteration loop
       
       
       
-      !Çü·şÓ¦Á¦
+      !å±ˆæœåº”åŠ› Yeild Stress
       
       if(dpeeq .EQ. ZERO)then
           sig_y = mise
@@ -317,10 +324,11 @@ c     À­Ã·³£Êı
      2  (((Taylor*dpeeq)/(dt*Gamma0))**(ONE/M_star))
       end if
 
-                  !¸ù¾İµü´úµÃ³öµÄµÈĞ§ËÜĞÔÓ¦±ä¼ÆËãÕÛ¼õÏµÊı
+                  !æ ¹æ®è¿­ä»£å¾—å‡ºçš„ç­‰æ•ˆå¡‘æ€§åº”å˜è®¡ç®—æŠ˜å‡ç³»æ•°
+                  !The reduction coefficient is calculated according to the equivalent plastic strain obtained by iteration
                   factor = sig_y/mise
                   
-                  !¼ÆËãÓ¦Á¦
+                  !è®¡ç®—åº”åŠ› Calculating Stress
                   stressNew(k,1) = s1*factor + sm
                   stressNew(k,2) = s2*factor + sm
                   stressNew(k,3) = s3*factor + sm
@@ -328,7 +336,7 @@ c     À­Ã·³£Êı
                   stressNew(k,5) = s5*factor
                   stressNew(k,6) = s6*factor
                   
-                  !¼ÆËãÄÜÁ¿
+                  !è®¡ç®—èƒ½é‡ Calculating Energy
                   strainEnergy = HALF * (
      1  (stressNew(k,1)+stressOld(k,1))*strainInc(k,1) + 
      2  (stressNew(k,2)+stressOld(k,2))*strainInc(k,2) + 
