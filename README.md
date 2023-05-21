@@ -1,7 +1,7 @@
 # Dislocation Density VUMAT Subroutine for ABAQUS
 
 This is a simple VUMAT subroutine written in FORTRAN to implement a Dislocation Density Constitutive Model in ABAQUS.
-The subroutine is quite simple that only a few FORTRAN basic knowledge needed for the VUMAT, and some rules about program which ABAQUS made is also essential for understanding. These program rules, which mostly about the input and output parameters of subroutine or the information of how the parameters are set, could be find in the ABAQUS Documentation.
+The subroutine is quite simple that only a few basic FORTRAN knowledge needed for the VUMAT, and some rules about program which ABAQUS made is also essential for understanding. These program rules, which mostly about the input and output parameters of subroutine or the information of how the parameters are set, could be find in the ABAQUS Documentation.
 
 **To say the least, if you didn't want to read the code and understand how it works, The need of these knowledge could be ignored.** You just need to load the *.for file to the ABAQUS with a VUMAT environment.
 
