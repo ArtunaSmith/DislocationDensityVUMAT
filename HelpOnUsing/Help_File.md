@@ -32,7 +32,7 @@ You can find how to install a Fortran Compiler and how to link it with the ABAQU
 
 The following picture shows the detail operation.
 
-<img src="C:\Users\lenovo.DESKTOP-9UG55V9\AppData\Roaming\Typora\typora-user-images\image-20230723193531110.png" alt="image-20230723193531110" style="zoom: 80%;" />
+<img src=".\01.png" alt="image-20230723193531110" style="zoom: 80%;" />
 
 
 
