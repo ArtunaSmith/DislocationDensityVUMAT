@@ -32,7 +32,7 @@ You can find how to install a Fortran Compiler and how to link it with the ABAQU
 
 The following picture shows the detail operation.
 
-<img src="\01.png" alt="image01" style="zoom: 80%;" />
+<img src="\imgs\01.png" alt="image01" style="zoom: 80%;" />
 
 
 
