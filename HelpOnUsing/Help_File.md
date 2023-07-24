@@ -44,7 +44,7 @@ The following picture shows the detail operation.
 
 According to another literature (http://dx.doi.org/10.1016/j.actamat.2015.06.054), the parameters of the constitutive model are the following picture.
 
-<img src="C:\Users\lenovo.DESKTOP-9UG55V9\AppData\Roaming\Typora\typora-user-images\image-20230723195117575.png" alt="image-20230723195117575" style="zoom:80%;" />
+<img src="\imgs\02.png" alt="image02" style="zoom: 80%;" />
 
 These parameters values are the values which there works use. You can adjust them according to your task.
 
@@ -86,10 +86,10 @@ Rho_w0 = 5.0e7
 To define the parameters which we use in out subroutine, you show define a material in the *Property* view firstly. It's as the same as how you define a material before. Our VUMAT subroutine is for ABAQUS/Explicit, so that define a ***Density*** material behavior is essential. Except the ***Density***, we have the other two material behavior which are the ***Depvar*** and the ***User Material***. They are all in the pull-down option under the *General* option. The detail operation the value of them is shown in the following picture.
 
 <center>
-    <img src="C:\Users\lenovo.DESKTOP-9UG55V9\AppData\Roaming\Typora\typora-user-images\image-20230724125001491.png" alt="image-20230724125001491" style="zoom:50%;" />
-    <img src="C:\Users\lenovo.DESKTOP-9UG55V9\AppData\Roaming\Typora\typora-user-images\image-20230724125118579.png" alt="image-20230724125118579" style="zoom:50%;" />
+    <img src="\imgs\03.png" alt="image03" style="zoom:50%;" />
+    <img src="\imgs\04.png" alt="image04" style="zoom:50%;" />
 </center>
-<img src="C:\Users\lenovo.DESKTOP-9UG55V9\AppData\Roaming\Typora\typora-user-images\image-20230724125405392.png" alt="image-20230724125405392" style="zoom:67%;" />
+<img src="\imgs\05.png" alt="image-05" style="zoom:67%;" />
 
 ***Depvar*** is the solution dependent variables we define in our VUMAT subroutine. And there are 7 variables I defined, so that the value of the ***Depvar*** is 7. And the meaning of each variable is appeared in the commentary within the source code. I also put them in the following table. These information can help you to check each of these variable while knowing their meaning during the post-processing.
 
@@ -119,7 +119,7 @@ Our test model is a simple cantilever beam, its right side were fixed. Then we d
 
 The load is applied on the **RP-1**. Actually, its a Boundary Condition in ABAQUS. we fixed the **RP-1** on all the dimension unless the UR3 which mean the rotate on the axis Z. The value of UR3 is modified with the value **6.28** in the analyse step which means we let the left side rotate 2 circle. So the cantilever beam will undergo torsion deformation which will create lots of shear stress, so the dislocation density will vary greatly.
 
-<img src="C:\Users\lenovo.DESKTOP-9UG55V9\AppData\Roaming\Typora\typora-user-images\image-20230724135327538.png" alt="image-20230724135327538" style="zoom:80%;" />
+<img src="\imgs\06.png" alt="image06" style="zoom:80%;" />
 
 
 
@@ -127,7 +127,7 @@ The load is applied on the **RP-1**. Actually, its a Boundary Condition in ABAQU
 
 **It need to be mentioned that adding the SDV into the Field Output is a important thing if you want to check the 7 solution dependent variables we mentioned before.** The detail of operation is shown in the following picture.
 
-<img src="C:\Users\lenovo.DESKTOP-9UG55V9\AppData\Roaming\Typora\typora-user-images\image-20230724141342317.png" alt="image-20230724141342317" style="zoom:80%;" />
+<img src="\imgs\07.png" alt="image07" style="zoom:80%;" />
 
 
 
@@ -135,19 +135,19 @@ The load is applied on the **RP-1**. Actually, its a Boundary Condition in ABAQU
 
 Mises:
 
-<img src="C:\Users\lenovo.DESKTOP-9UG55V9\AppData\Roaming\Typora\typora-user-images\image-20230724142209471.png" alt="image-20230724142209471" style="zoom:80%;" />
+<img src="\imgs\08.png" alt="image08" style="zoom:80%;" />
 
 
 
 SDV5 (Cell Size):
 
-<img src="C:\Users\lenovo.DESKTOP-9UG55V9\AppData\Roaming\Typora\typora-user-images\image-20230724142112403.png" alt="image-20230724142112403" style="zoom:80%;" />
+<img src="\imgs\09.png" alt="image09" style="zoom:80%;" />
 
 
 
 SDV7 (Dislocation Density):
 
-<img src="C:\Users\lenovo.DESKTOP-9UG55V9\AppData\Roaming\Typora\typora-user-images\image-20230724142136440.png" alt="image-20230724142136440" style="zoom:80%;" />
+<img src="\imgs\10.png" alt="image10" style="zoom:80%;" />
 
 
 
